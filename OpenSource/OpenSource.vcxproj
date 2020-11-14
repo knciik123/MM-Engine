@@ -75,7 +75,7 @@
     <OutDir>$(SolutionDir)\Build\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Build\$(Configuration)\$(Platform)\Temp\</IntDir>
     <TargetName>MM Engine</TargetName>
-    <IncludePath>$(SolutionDir)\ThirdParty\StormLib\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\ThirdParty\RapidJSON\Include;$(SolutionDir)\ThirdParty\StormLib\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\ThirdParty\StormLib\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,7 +83,7 @@
     <OutDir>$(SolutionDir)\Build\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(SolutionDir)\Build\$(Configuration)\$(Platform)\Temp\</IntDir>
     <TargetName>MM Engine</TargetName>
-    <IncludePath>$(SolutionDir)\ThirdParty\StormLib\Include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\ThirdParty\RapidJSON\Include;$(SolutionDir)\ThirdParty\StormLib\Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)\ThirdParty\StormLib\Lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
