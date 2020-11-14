@@ -9,8 +9,9 @@ class CEngine
 {
 private:
 	HMODULE m_hGame;
-	std::map<std::string, LPVOID> m_DataTable;
+	std::map<std::string, DWORD> m_DataTable;
 
+	void LoadConfigs();
 	void LoadManifest(std::string ModName);
 public:
 	CEngine(HMODULE hGame);
@@ -18,5 +19,5 @@ public:
 
 	void StartGame(std::string ModName);
 
-	LPVOID GetData(std::string Key);
+	DWORD GetData(std::string Key);
 };
