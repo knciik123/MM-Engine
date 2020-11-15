@@ -24,7 +24,7 @@ BOOL WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	Exploit(hGame, GetModuleHandle("user32.dll"), "SetWindowTextA", SetWindowTextA_Proxy);
 
-	engine->StartGame("");
+	engine->StartGame("Naga Race");
 	delete engine;
 
 	return TRUE;
@@ -43,7 +43,7 @@ BOOL WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 BOOL WINAPI SetWindowTextA_Proxy(HWND hWnd, LPCSTR lpString)
 {
 	if (!_strcmpi(lpString, "warcraft iii"))
-		return SetWindowText(hWnd, (LPCSTR)engine->GetData("WindowName"));
+		return SetWindowText(hWnd, (LPCSTR)engine->GetData("ModName"));
 
 	return SetWindowText(hWnd, lpString);
 }
