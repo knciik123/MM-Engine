@@ -56,6 +56,8 @@ BOOL WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	HMODULE hUser32 = GetModuleHandle("user32.dll");
 	Exploit(hGame, hUser32, "CreateWindowExA", CreateWindowExA_Proxy);
 	Exploit(hGame, hUser32, "SetWindowTextA", SetWindowTextA_Proxy);
+	Exploit(hGame, hUser32, "LoadCursorA", LoadCursorA_Proxy);
+	Exploit(hGame, hUser32, "LoadImageA", LoadImageA_Proxy);
 
 	engine->StartGame(GetParam(lpCmdLine, "mod"));
 	delete engine;
@@ -89,15 +91,16 @@ HCURSOR WINAPI LoadCursorA_Proxy(HINSTANCE hInstance, LPCSTR lpCursorName)
 	return LoadCursor(hInstance, lpCursorName);
 }
 
-/*HANDLE WINAPI LoadImageA_Proxy(HINSTANCE hInst, LPCSTR name, UINT type, int cx, int cy, UINT fuLoad)
+HANDLE WINAPI LoadImageA_Proxy(HINSTANCE hInst, LPCSTR name, UINT type, int cx, int cy, UINT fuLoad)
 {
-	if (!strcmpi(name, "war3x.ico"))
-		if (!strcmpi(l_lpIconName, "MMEngine.ico"))
+	if (!_strcmpi(name, "war3x.ico"))
+		return LoadImage(hInst, "MMEngine.ico", type, cx, cy, fuLoad);
+		/*if (!strcmpi(l_lpIconName, "MMEngine.ico"))
 			return LoadImage(hInst, l_lpIconName, type, cx, cy, fuLoad);
 		else if (FileExists(l_lpIconName))
 			return LoadImage(NULL, l_lpIconName, IMAGE_ICON, NULL, NULL, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 		else
-			return LoadImage(hInst, "MMEngine.ico", type, cx, cy, fuLoad);
+			return LoadImage(hInst, "MMEngine.ico", type, cx, cy, fuLoad);*/
 
 	return LoadImage(hInst, name, type, cx, cy, fuLoad);
-}*/
+}

@@ -157,7 +157,18 @@
   <ItemGroup>
     <ClInclude Include="CEngine.h" />
     <ClInclude Include="Memory.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="StringUtils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OpenSource.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="MM Engine Bitmap.bmp" />
+    <Image Include="MM Engine.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MM Engine Cursor.cur" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
