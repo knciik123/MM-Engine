@@ -1,4 +1,3 @@
-// Dev
 #include <Windows.h>
 #include <string>
 
