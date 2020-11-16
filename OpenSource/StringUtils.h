@@ -2,12 +2,17 @@
 
 #include <string.h>
 
-#ifndef __cplusplus
+#ifdef _WIN32
+#include <windows.h>
+#else
 
 typedef const char* LPCSTR;
 typedef char* LPSTR;
 typedef unsigned int size_t;
 
+#endif
+
+#ifndef __cplusplus
 extern "C"
 {
 #endif
