@@ -16,15 +16,48 @@ HANDLE WINAPI LoadImageA_Proxy(HINSTANCE hInst, LPCSTR name, UINT type, int cx, 
 
 //---------------------------------------------------------------------------
 
-BOOL WINAPI SetWindowTextA_Proxy(HWND hWnd, LPCSTR lpString);
+std::string GetParam(std::string lpCmdLine, std::string Key)
+{
+	std::string line = lpCmdLine;
+	size_t i;
+
+	for (i = 0; i < line.size(); i++)
+		if (!_strnicmp(&line[i - Key.size()], std::string("-" + Key).c_str(), Key.size() + 1) && (i == line.size() - 1 || line[i + 1] == ' '))
+			break;
+
+	if (i == line.size() - 1)
+		return "";
+
+	for (i++; line[i] == ' '; i++)
+	{ }
+
+	line = line.substr(i, line.size() - i);
+
+	for (i = 0; i < line.size(); i++)
+		if (line[i] == ' ' && line[i + 1] == '-' && line[i + 2] != ' ' && i + 2 < line.size())
+			break;
+
+	line = line.substr(0, i);
+
+	for (i = line.size() - 1; i > 0 && line[i] == ' '; i--)
+	{ }
+
+	i++;
+
+	line = line.substr(0, i);
+
+	return line;
+}
 
 BOOL WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	engine = new CEngine(hGame);
 
-	Exploit(hGame, GetModuleHandle("user32.dll"), "SetWindowTextA", SetWindowTextA_Proxy);
+	HMODULE hUser32 = GetModuleHandle("user32.dll");
+	Exploit(hGame, hUser32, "CreateWindowExA", CreateWindowExA_Proxy);
+	Exploit(hGame, hUser32, "SetWindowTextA", SetWindowTextA_Proxy);
 
-	engine->StartGame("Naga Race");
+	engine->StartGame(GetParam(lpCmdLine, "mod"));
 	delete engine;
 
 	return TRUE;
@@ -32,13 +65,13 @@ BOOL WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 //---------------------------------------------------------------------------
 
-/*HWND WINAPI CreateWindowExA_Proxy(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam)
+HWND WINAPI CreateWindowExA_Proxy(DWORD dwExStyle, LPCSTR lpClassName, LPCSTR lpWindowName, DWORD dwStyle, int X, int Y, int nWidth, int nHeight, HWND hWndParent, HMENU hMenu, HINSTANCE hInstance, LPVOID lpParam)
 {
-	if (!strcmpi(lpWindowName, "warcraft iii"))
-		return CreateWindowEx(dwExStyle, lpClassName, l_lpModName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
+	if (!_strcmpi(lpWindowName, "warcraft iii"))
+		return CreateWindowEx(dwExStyle, lpClassName, (LPCSTR)engine->GetData("ModName"), dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
 
 	return CreateWindowEx(dwExStyle, lpClassName, lpWindowName, dwStyle, X, Y, nWidth, nHeight, hWndParent, hMenu, hInstance, lpParam);
-}*/
+}
 
 BOOL WINAPI SetWindowTextA_Proxy(HWND hWnd, LPCSTR lpString)
 {
