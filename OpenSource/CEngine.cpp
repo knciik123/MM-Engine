@@ -4,12 +4,13 @@
 #include <filereadstream.h>
 #include <vector>
 
-#include "StringUtils.h"
+#include "Utils.h"
 #include "Memory.h"
 
 CEngine::CEngine(HMODULE hGame): m_hGame(hGame)
 {
 	m_DataTable["ModName"] = (DWORD)strcopy("MM Engine");
+	m_DataTable["ModIcon"] = (DWORD)strcopy("MMEngine.ico");
 }
 
 CEngine::~CEngine()
@@ -81,7 +82,8 @@ DWORD CEngine::GetData(std::string Key)
 
 void CEngine::LoadManifest(std::string ModName)
 {
-	FILE* json = fopen((".\\Mods\\" + ModName + "\\Manifest.json").c_str(), "rb");
+	std::string path = ".\\Mods\\" + ModName + "\\";
+	FILE* json = fopen((path + "Manifest.json").c_str(), "rb");
 
 	if (!json)
 		return;
@@ -107,5 +109,11 @@ void CEngine::LoadManifest(std::string ModName)
 	{
 		delete[] (LPSTR)m_DataTable["ModName"];
 		m_DataTable["ModName"] = (DWORD)strcopy(doc["ModName"].GetString());
+	}
+
+	if (doc.HasMember("ModIcon") && doc["ModIcon"].IsString())
+	{
+		delete[] (LPSTR)m_DataTable["ModIcon"];
+		m_DataTable["ModIcon"] = (DWORD)strcopy((path + std::string(doc["ModIcon"].GetString()) + ".ico").c_str());
 	}
 }

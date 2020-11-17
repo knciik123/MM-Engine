@@ -158,7 +158,7 @@
     <ClInclude Include="CEngine.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="StringUtils.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenSource.rc" />

@@ -3,6 +3,7 @@
 
 #include "Memory.h"
 #include "CEngine.h"
+#include "Utils.h"
 
 HMODULE hGame = LoadLibrary("game.dll");
 CEngine* engine = nullptr;
@@ -94,13 +95,16 @@ HCURSOR WINAPI LoadCursorA_Proxy(HINSTANCE hInstance, LPCSTR lpCursorName)
 HANDLE WINAPI LoadImageA_Proxy(HINSTANCE hInst, LPCSTR name, UINT type, int cx, int cy, UINT fuLoad)
 {
 	if (!_strcmpi(name, "war3x.ico"))
-		return LoadImage(hInst, "MMEngine.ico", type, cx, cy, fuLoad);
-		/*if (!strcmpi(l_lpIconName, "MMEngine.ico"))
-			return LoadImage(hInst, l_lpIconName, type, cx, cy, fuLoad);
-		else if (FileExists(l_lpIconName))
-			return LoadImage(NULL, l_lpIconName, IMAGE_ICON, NULL, NULL, LR_LOADFROMFILE | LR_DEFAULTSIZE);
+	{
+		LPCSTR icon = (LPCSTR)engine->GetData("ModIcon");
+
+		if (!_strcmpi(icon, "MMEngine.ico"))
+			return LoadImage(hInst, icon, type, cx, cy, fuLoad);
+		else if (FileExists(icon))
+			return LoadImage(NULL, icon, IMAGE_ICON, NULL, NULL, LR_LOADFROMFILE | LR_DEFAULTSIZE);
 		else
-			return LoadImage(hInst, "MMEngine.ico", type, cx, cy, fuLoad);*/
+			return LoadImage(hInst, "MMEngine.ico", type, cx, cy, fuLoad);
+	}
 
 	return LoadImage(hInst, name, type, cx, cy, fuLoad);
 }

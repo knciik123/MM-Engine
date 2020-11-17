@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdio.h>
 #include <string.h>
 
 #ifdef _WIN32
@@ -27,6 +28,18 @@ extern "C"
 			retval[i] = str[i];
 
 		return retval;
+	}
+
+	inline bool FileExists(LPCSTR name)
+	{
+		FILE* file = fopen(name, "rb");
+
+		if (!file)
+			return false;
+
+		fclose(file);
+
+		return true;
 	}
 
 #ifndef __cplusplus
