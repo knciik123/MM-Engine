@@ -11,6 +11,7 @@ CEngine::CEngine(HMODULE hGame): m_hGame(hGame)
 {
 	m_DataTable["ModName"] = (DWORD)strcopy("MM Engine");
 	m_DataTable["ModIcon"] = (DWORD)strcopy("MMEngine.ico");
+	m_DataTable["ModVersion"] = (DWORD)strcopy("MM Engine - Version 2.0.0 (Dev Build)");
 }
 
 CEngine::~CEngine()
@@ -110,10 +111,16 @@ void CEngine::LoadManifest(std::string ModName)
 		delete[] (LPSTR)m_DataTable["ModName"];
 		m_DataTable["ModName"] = (DWORD)strcopy(doc["ModName"].GetString());
 	}
-
+	
 	if (doc.HasMember("ModIcon") && doc["ModIcon"].IsString())
 	{
 		delete[] (LPSTR)m_DataTable["ModIcon"];
 		m_DataTable["ModIcon"] = (DWORD)strcopy((path + std::string(doc["ModIcon"].GetString()) + ".ico").c_str());
+	}
+
+	if (doc.HasMember("ModVersion") && doc["ModVersion"].IsString())
+	{
+		delete[](LPSTR)m_DataTable["ModVersion"];
+		m_DataTable["ModVersion"] = (DWORD)strcopy(doc["ModVersion"].GetString());
 	}
 }

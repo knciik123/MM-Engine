@@ -15,6 +15,8 @@ BOOL WINAPI SetWindowTextA_Proxy(HWND hWnd, LPCSTR lpString);
 HCURSOR WINAPI LoadCursorA_Proxy(HINSTANCE hInstance, LPCSTR lpCursorName);
 HANDLE WINAPI LoadImageA_Proxy(HINSTANCE hInst, LPCSTR name, UINT type, int cx, int cy, UINT fuLoad);
 
+int __cdecl SStrVPrintf_Proxy(char* dest, size_t size, const char* format, void* a...);
+
 //---------------------------------------------------------------------------
 
 std::string GetParam(std::string lpCmdLine, std::string Key)
@@ -53,12 +55,16 @@ std::string GetParam(std::string lpCmdLine, std::string Key)
 BOOL WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 	engine = new CEngine(hGame);
-
+	
 	HMODULE hUser32 = GetModuleHandle("user32.dll");
 	Exploit(hGame, hUser32, "CreateWindowExA", CreateWindowExA_Proxy);
 	Exploit(hGame, hUser32, "SetWindowTextA", SetWindowTextA_Proxy);
 	Exploit(hGame, hUser32, "LoadCursorA", LoadCursorA_Proxy);
 	Exploit(hGame, hUser32, "LoadImageA", LoadImageA_Proxy);
+
+	Exploit(hGame, GetModuleHandle("storm.dll"), (LPCSTR)578, SStrVPrintf_Proxy);
+
+	//patch((UINT_PTR)hGame + 0x58BF7F, engine->GetData("ModVersion"), 4);
 
 	engine->StartGame(GetParam(lpCmdLine, "mod"));
 	delete engine;
@@ -107,4 +113,12 @@ HANDLE WINAPI LoadImageA_Proxy(HINSTANCE hInst, LPCSTR name, UINT type, int cx, 
 	}
 
 	return LoadImage(hInst, name, type, cx, cy, fuLoad);
+}
+
+int __cdecl SStrVPrintf_Proxy(char* dest, size_t size, const char* format, void* a ...)
+{
+	if (!strcmp(format, "%d.%d.%d.%d"))
+		return SStrVPrintf(dest, size, (LPCSTR)engine->GetData("ModVersion"), a);   // Я до сих пор не могу понять, какого хера здесь возникает ошибка*
+
+	return SStrVPrintf(dest, size, format, a);
 }

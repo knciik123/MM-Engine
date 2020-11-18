@@ -48,3 +48,20 @@ inline void Exploit(HMODULE lib, HMODULE api, LPCSTR name, LPVOID proc)
 		}
 	}
 }
+
+inline bool patch(UINT_PTR address, DWORD data, size_t size)
+{
+	if (!address || !size)
+		return false;
+
+	DWORD dwOldProtect;
+	if (VirtualProtect((LPVOID)address, size, PAGE_EXECUTE_READWRITE, &dwOldProtect))
+	{
+		memcpy((LPVOID)address, (LPVOID)&data, size);
+		VirtualProtect((LPVOID)address, size, dwOldProtect, nullptr);
+
+		return true;
+	}
+
+	return false;
+}
