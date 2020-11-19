@@ -115,10 +115,15 @@ HANDLE WINAPI LoadImageA_Proxy(HINSTANCE hInst, LPCSTR name, UINT type, int cx, 
 	return LoadImage(hInst, name, type, cx, cy, fuLoad);
 }
 
+int SStrVPrintf_Analog(char* dest, size_t size, void* a ...)
+{
+	return SStrVPrintf(dest, size, (LPCSTR)engine->GetData("ModVersion"), a);
+}
+
 int __cdecl SStrVPrintf_Proxy(char* dest, size_t size, const char* format, void* a ...)
 {
 	if (!strcmp(format, "%d.%d.%d.%d"))
-		return SStrVPrintf(dest, size, (LPCSTR)engine->GetData("ModVersion"), a);   // Я до сих пор не могу понять, какого хера здесь возникает ошибка*
+		return SStrVPrintf_Analog(dest, size, a);
 
 	return SStrVPrintf(dest, size, format, a);
 }

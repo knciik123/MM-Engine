@@ -12,6 +12,8 @@ CEngine::CEngine(HMODULE hGame): m_hGame(hGame)
 	m_DataTable["ModName"] = (DWORD)strcopy("MM Engine");
 	m_DataTable["ModIcon"] = (DWORD)strcopy("MMEngine.ico");
 	m_DataTable["ModVersion"] = (DWORD)strcopy("MM Engine - Version 2.0.0 (Dev Build)");
+	m_DataTable["Priority"] = 9;
+	m_DataTable["Races"] = (DWORD)(new std::vector<std::string> { "Human", "Orc", "Undead", "NightElf" });
 }
 
 CEngine::~CEngine()
@@ -123,4 +125,21 @@ void CEngine::LoadManifest(std::string ModName)
 		delete[](LPSTR)m_DataTable["ModVersion"];
 		m_DataTable["ModVersion"] = (DWORD)strcopy(doc["ModVersion"].GetString());
 	}
+
+	if (doc.HasMember("Mpqs") && doc["Mpqs"].IsArray())
+		for (auto it = doc["Mpqs"].MemberBegin(); it < doc["Mpqs"].MemberEnd(); it++)
+		{
+			rapidjson::Value mpq = it->name.GetArray();
+
+			if (mpq.HasMember("Name") && mpq["Name"].IsString())
+			{
+				HANDLE hMpq;
+
+				SFileOpenArchive((path + "Mpqs\\" + mpq["Name"].GetString() + ".mpq").c_str(), (mpq.HasMember("Priority") && mpq["Priority"].IsInt()) ? mpq["Priority"].GetInt() : m_DataTable["Priority"]++, 0, &hMpq);
+			}
+		}
+
+	//std::vector<std::string>& races = (*(std::vector<std::string>*)m_DataTable["Races"]);
+
+	//MessageBox(0, (*(std::vector<std::string>*)m_DataTable["Races"])[0].c_str(), (*(std::vector<std::string>*)m_DataTable["Races"])[1].c_str(), 0);
 }
