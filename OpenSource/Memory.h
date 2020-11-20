@@ -65,3 +65,28 @@ inline bool patch(UINT_PTR address, DWORD data, size_t size)
 
 	return false;
 }
+
+inline bool fill(UINT_PTR address, DWORD dwBytes, SIZE_T nSize)
+{
+	bool retval = true;
+
+	for (UINT i = 0; i < nSize; i++)
+		if (retval)
+			retval = patch(address + i, dwBytes, 1);
+		else
+			return false;
+
+	return true;
+}
+
+template <typename A>
+inline bool call(UINT_PTR address, A proc)
+{
+	return patch(address, 0xe8, 1) & patch(address + 1, (UINT_PTR)proc - (address + 5), 4);
+}
+
+template <typename A>
+inline bool jmp(UINT_PTR address, A proc)
+{
+	return patch(address, 0xe9, 1) & patch(address + 1, (UINT_PTR)proc - (address + 5), 4);
+}

@@ -13,7 +13,8 @@ CEngine::CEngine(HMODULE hGame): m_hGame(hGame)
 	m_DataTable["ModIcon"] = (DWORD)strcopy("MMEngine.ico");
 	m_DataTable["ModVersion"] = (DWORD)strcopy("MM Engine - Version 2.0.0 (Dev Build)");
 	m_DataTable["Priority"] = 9;
-	m_DataTable["Races"] = (DWORD)(new std::vector<std::string> { "Human", "Orc", "Undead", "NightElf" });
+	m_DataTable["Skins"] = (DWORD)(new std::vector<std::string> { "Human", "Orc", "Undead", "NightElf" });
+	m_DataTable["Keys"] = (DWORD)(new std::vector<std::string> { "HUMAN", "ORC", "UNDEAD", "NIGHT_ELF" });
 }
 
 CEngine::~CEngine()
@@ -127,9 +128,9 @@ void CEngine::LoadManifest(std::string ModName)
 	}
 
 	if (doc.HasMember("Mpqs") && doc["Mpqs"].IsArray())
-		for (auto it = doc["Mpqs"].MemberBegin(); it < doc["Mpqs"].MemberEnd(); it++)
+		for (size_t it = 0; it < doc["Mpqs"].MemberCount(); it++)
 		{
-			rapidjson::Value mpq = it->name.GetArray();
+			rapidjson::Value mpq = doc["Mpqs"][it].GetObjectA();
 
 			if (mpq.HasMember("Name") && mpq["Name"].IsString())
 			{
@@ -139,7 +140,30 @@ void CEngine::LoadManifest(std::string ModName)
 			}
 		}
 
-	//std::vector<std::string>& races = (*(std::vector<std::string>*)m_DataTable["Races"]);
+	{
+		std::vector<std::string>& races = (*(std::vector<std::string>*)m_DataTable["Skins"]);
+		std::vector<std::string>& raceskeys = (*(std::vector<std::string>*)m_DataTable["Keys"]);
 
-	//MessageBox(0, (*(std::vector<std::string>*)m_DataTable["Races"])[0].c_str(), (*(std::vector<std::string>*)m_DataTable["Races"])[1].c_str(), 0);
+		for (auto r : races)
+			r.~basic_string();
+
+		for (auto r : raceskeys)
+			r.~basic_string();
+
+		std::vector<std::string>().swap(races);
+		std::vector<std::string>().swap(raceskeys);
+
+		if (doc.HasMember("Races") && doc["Races"].IsArray())
+			for (size_t it = 0; it < doc["Races"].MemberCount(); it++)
+			{
+				rapidjson::Value race = doc["Races"][it].GetObjectA();
+
+				if (race.HasMember("Skin") && race["Skin"].IsString())
+				{
+
+					races.push_back(race["Skin"].GetString());
+					raceskeys.push_back(race.HasMember("Key") && race["Key"].IsString() ? race["Key"].GetString() : "UNKNOWN");
+				}
+			}
+	}
 }

@@ -1,11 +1,12 @@
 #include <Windows.h>
+#include <vector>
 #include <string>
 
 #include "Memory.h"
 #include "CEngine.h"
 #include "Utils.h"
 
-HMODULE hGame = LoadLibrary("game.dll");
+extern "C" HMODULE hGame = LoadLibrary("game.dll");
 CEngine* engine = nullptr;
 
 //---------------------------------------------------------------------------
@@ -16,6 +17,40 @@ HCURSOR WINAPI LoadCursorA_Proxy(HINSTANCE hInstance, LPCSTR lpCursorName);
 HANDLE WINAPI LoadImageA_Proxy(HINSTANCE hInst, LPCSTR name, UINT type, int cx, int cy, UINT fuLoad);
 
 int __cdecl SStrVPrintf_Proxy(char* dest, size_t size, const char* format, void* a...);
+
+//---------------------------------------------------------------------------
+
+extern "C" {
+	std::string& GetRace(UINT index);
+
+	std::string& GetRaceName(UINT index);
+
+	size_t GetRacesCount();
+
+	size_t GetRacesNamesCount();
+
+	void RaceUI();
+
+	void RaceSounds();
+
+	void RaceLoadingScreen();
+
+	void RaceName();
+
+	void RaceScoreScreen();
+
+	void RaceOrder();
+
+	void RaceSlot();
+
+	void RaceStartUnits();
+
+	void RaceBlocked();
+
+	void RaceIncreaser();
+
+	void RaceInit();
+}
 
 //---------------------------------------------------------------------------
 
@@ -62,6 +97,23 @@ BOOL WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	Exploit(hGame, hUser32, "LoadCursorA", LoadCursorA_Proxy);
 	Exploit(hGame, hUser32, "LoadImageA", LoadImageA_Proxy);
 
+	DWORD dwGame = (DWORD)hGame;
+	jmp(dwGame + 0x3a2840, RaceUI);
+	jmp(dwGame + 0x31f5d0, RaceSounds);
+	jmp(dwGame + 0x5a3d84, RaceLoadingScreen);
+	jmp(dwGame + 0x58aa02, RaceName);
+	jmp(dwGame + 0x39f710, RaceScoreScreen);
+	jmp(dwGame + 0x559580, RaceOrder);
+	jmp(dwGame + 0x5bed8e, dwGame + 0x5bedab);
+	jmp(dwGame + 0x559260, RaceSlot);
+	jmp(dwGame + 0x3a31a0, RaceStartUnits);
+	jmp(dwGame + 0x599bcc, RaceBlocked);
+	fill(dwGame + 0x5c0a1b, 0x90, 6);
+	fill(dwGame + 0x5c0a25, 0x90, 5);
+	jmp(dwGame + 0x3c11d0, RaceIncreaser);
+	jmp(dwGame + 0x3c11a0, RaceInit);
+	patch(dwGame + 0x5bf4e3, 0, 1);
+
 	Exploit(hGame, GetModuleHandle("storm.dll"), (LPCSTR)578, SStrVPrintf_Proxy);
 
 	//patch((UINT_PTR)hGame + 0x58BF7F, engine->GetData("ModVersion"), 4);
@@ -70,6 +122,29 @@ BOOL WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 	delete engine;
 
 	return TRUE;
+}
+//---------------------------------------------------------------------------
+
+extern "C" {
+	std::string& GetRace(UINT index)
+	{
+		return (*(std::vector<std::string>*)engine->GetData("Skins"))[index];
+	}
+
+	std::string& GetRaceName(UINT index)
+	{
+		return (*(std::vector<std::string>*)engine->GetData("Keys"))[index];
+	}
+
+	size_t GetRacesCount()
+	{
+		return (*(std::vector<std::string>*)engine->GetData("Skins")).size();
+	}
+
+	size_t GetRacesNamesCount()
+	{
+		return (*(std::vector<std::string>*)engine->GetData("Keys")).size();
+	}
 }
 
 //---------------------------------------------------------------------------
