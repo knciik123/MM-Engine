@@ -171,12 +171,12 @@
     <Image Include="MM Engine.ico" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\README.md" />
     <None Include="..\ThirdParty\master.svg" />
     <None Include="MM Engine Cursor.cur" />
     <MASM Include="Race System.asm">
       <FileType>Document</FileType>
     </MASM>
-    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

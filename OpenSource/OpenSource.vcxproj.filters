@@ -53,10 +53,10 @@
     <None Include="MM Engine Cursor.cur">
       <Filter>Файлы ресурсов</Filter>
     </None>
-    <None Include="README.md">
+    <None Include="..\ThirdParty\master.svg">
       <Filter>Файлы ресурсов</Filter>
     </None>
-    <None Include="..\ThirdParty\master.svg">
+    <None Include="..\README.md">
       <Filter>Файлы ресурсов</Filter>
     </None>
   </ItemGroup>
