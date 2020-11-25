@@ -9,6 +9,7 @@
 
 CEngine::CEngine(HMODULE hGame): m_hGame(hGame)
 {
+	m_DataTable["Mod"] = 0;
 	m_DataTable["ModName"] = (DWORD)strcopy("MM Engine");
 	m_DataTable["ModIcon"] = (DWORD)strcopy("MMEngine.ico");
 	m_DataTable["ModVersion"] = (DWORD)strcopy("MM Engine - Version 2.0.0 (Dev Build)");
@@ -37,7 +38,11 @@ void CEngine::StartGame(std::string ModName)
 	LoadConfigs();
 
 	if (!ModName.empty())
+	{
+		m_DataTable["Mod"] = (DWORD)strcopy(ModName.c_str());
+
 		LoadManifest(ModName);
+	}
 
 	stdcall<BOOL>(procGameMain, m_hGame);
 }
@@ -134,9 +139,17 @@ void CEngine::LoadManifest(std::string ModName)
 
 			if (mpq.HasMember("Name") && mpq["Name"].IsString())
 			{
-				HANDLE hMpq;
+				std::string filename = mpq["Name"].GetString();
+				std::string filepath = path + "Mpqs\\" + filename + ".mpq";
 
-				SFileOpenArchive((path + "Mpqs\\" + mpq["Name"].GetString() + ".mpq").c_str(), (mpq.HasMember("Priority") && mpq["Priority"].IsInt()) ? mpq["Priority"].GetInt() : m_DataTable["Priority"]++, 0, &hMpq);
+				if (FileExists(filepath.c_str()))
+				{
+					HANDLE hMpq;
+					
+					SFileOpenArchive(filepath.c_str(), (mpq.HasMember("Priority") && mpq["Priority"].IsInt()) ? mpq["Priority"].GetInt() : m_DataTable["Priority"]++, 0, &hMpq);
+				}
+				else if (m_DataTable["ShowMpqMessage"])
+					MessageBox(NULL, ("В моде " + std::string((LPCSTR)m_DataTable["Mod"]) + " отсутствует " + filename + ".mpq").c_str(), "Внимание", MB_ICONWARNING);
 			}
 		}
 

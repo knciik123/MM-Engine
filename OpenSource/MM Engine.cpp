@@ -116,8 +116,6 @@ BOOL WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLin
 
 	Exploit(hGame, GetModuleHandle("storm.dll"), (LPCSTR)578, SStrVPrintf_Proxy);
 
-	//patch((UINT_PTR)hGame + 0x58BF7F, engine->GetData("ModVersion"), 4);
-
 	engine->StartGame(GetParam(lpCmdLine, "mod"));
 	delete engine;
 

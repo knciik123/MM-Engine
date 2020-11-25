@@ -53,8 +53,10 @@
     <None Include="MM Engine Cursor.cur">
       <Filter>Файлы ресурсов</Filter>
     </None>
-    <None Include="Race System.asm">
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="Race System.asm">
       <Filter>Исходные файлы</Filter>
-    </None>
+    </MASM>
   </ItemGroup>
 </Project>
