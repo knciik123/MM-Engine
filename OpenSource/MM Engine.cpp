@@ -63,7 +63,7 @@ std::string GetParam(std::string lpCmdLine, std::string Key)
 		if (!_strnicmp(&line[i - Key.size()], std::string("-" + Key).c_str(), Key.size() + 1) && (i == line.size() - 1 || line[i + 1] == ' '))
 			break;
 
-	if (i == line.size() - 1)
+	if (i == line.size())
 		return "";
 
 	for (i++; line[i] == ' '; i++)
